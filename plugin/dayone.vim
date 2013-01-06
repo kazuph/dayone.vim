@@ -17,7 +17,7 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 if !exists('g:dayone_path')
-  let g:dayone_path = $HOME . "/Dropbox/アプリ/Day One/Journal.dayone/entries/"
+  let g:dayone_path = $HOME . "/Dropbox/アプリ/Day One/Journal.dayone/entries"
 endif
 
 command! -nargs=0 DayOneList :call dayone#list()

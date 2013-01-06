@@ -64,10 +64,6 @@ if !isdirectory(g:dayone_path)
   echo 'Not exists directory.'
 endif
 
-let text = '@@@@@@@@@@@'
-echo s:create_uuid()
-
-
 "------------------------
 " function
 "------------------------
@@ -104,7 +100,6 @@ function! dayone#_complete_ymdhms(...)
 endfunction
 
 function! dayone#new(text)
-  echo 'koko!'
   let items = {
   \ 'text': a:text,
   \ 'date': localtime(),
@@ -116,7 +111,7 @@ function! dayone#new(text)
     let items['date'] = strftime(g:dayone_entry_date)
   endif
   if items['text'] == ''
-    let items['text']= input("Entry title: ", "", "customlist,dayone#_complete_ymdhms")
+    let items['text']= input("Input Memo: ", "", "customlist,dayone#_complete_ymdhms")
   endif
   if items['text'] == ''
     return
@@ -133,7 +128,7 @@ function! dayone#new(text)
   " let file_name = strftime("%Y-%m-%d-") . s:create_uuid() . "." . g:dayone_entry_suffix
   let file_name = s:create_uuid() . "." . g:dayone_entry_suffix
 
-  echo "Making that entry " . file_name
+  echo "Made that entry " . file_name
   exe (&l:modified ? "sp" : "e") s:escarg(g:dayone_path . "/" . file_name)
 
   " entry template
@@ -151,8 +146,7 @@ function! dayone#new(text)
   call append(0, s:apply_template(template, items))
   let &undolevels = old_undolevels
   set nomodified
-
-  return 'END!!!'
+  " echo writefile(s:apply_template(template, items), s:escarg(g:dayone_path . "/" . file_name))
 
 endfunction
 
@@ -162,13 +156,13 @@ let s:default_template = [
 \ '<plist version="1.0">',
 \ '<dict>',
 \ '    <key>Creation Date</key>',
-\ '    <date>{{_$date_}}</date>',
+\ '    <date>{{_date_}}</date>',
 \ '    <key>Entry Text</key>',
-\ '    <string>{{_$text_}}</string>',
+\ '    <string>{{_text_}}</string>',
 \ '    <key>Starred</key>',
-\ '    <{{_$star_}}/>',
+\ '    <{{_star_}}/>',
 \ '    <key>UUID</key>',
-\ '    <string>{{_$uuid_}}</string>',
+\ '    <string>{{_uuid_}}</string>',
 \ '</dict>',
 \ '</plist>',
 \]
