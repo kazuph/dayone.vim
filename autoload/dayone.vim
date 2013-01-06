@@ -108,7 +108,7 @@ function! dayone#new(text)
   \}
 
   if g:dayone_entry_date != 'epoch'
-    let items['date'] = strftime(g:dayone_entry_date)
+    let items['date'] = strftime(g:dayone_entry_date, localtime() - 9 * 60 * 60)
   endif
   if items['text'] == ''
     let items['text']= input("Input Memo: ", "", "customlist,dayone#_complete_ymdhms")
