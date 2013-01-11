@@ -67,38 +67,6 @@ endif
 "------------------------
 " function
 "------------------------
-function! dayone#list()
-  if get(g:, 'dayone_vimfiler', 0) != 0
-    exe "VimFiler" s:escarg(g:dayone_path)
-  else
-    exe "e" s:escarg(g:dayone_path)
-  endif
-endfunction
-
-function! dayone#grep(word)
-  let word = a:word
-  if word == ''
-    let word = input("EntryGrep word: ")
-  endif
-  if word == ''
-    return
-  endif
-
-  try
-    if get(g:, 'dayone_qfixgrep', 0) != 0
-      exe "Vimgrep -r" s:escarg(word) s:escarg(g:dayone_path . "/*")
-    else
-      exe "vimgrep" s:escarg(word) s:escarg(g:dayone_path . "/*")
-    endif
-  catch
-    redraw | echohl ErrorMsg | echo v:exception | echohl None
-  endtry
-endfunction
-
-function! dayone#_complete_ymdhms(...)
-  return [strftime("%Y%m%d%H%M")]
-endfunction
-
 function! dayone#new(text)
   let items = {
   \ 'text': a:text,
@@ -128,25 +96,26 @@ function! dayone#new(text)
   " let file_name = strftime("%Y-%m-%d-") . s:create_uuid() . "." . g:dayone_entry_suffix
   let file_name = s:create_uuid() . "." . g:dayone_entry_suffix
 
-  echo "Made that entry " . file_name
-  exe (&l:modified ? "sp" : "e") s:escarg(g:dayone_path . "/" . file_name)
+  " echo "Made that entry " . file_name
+  " exe (&l:modified ? "sp" : "e") s:escarg(g:dayone_path . "/" . file_name)
 
-  " entry template
+  " " entry template
   let template = s:default_template
-  if g:dayone_template_dir_path != ""
-    let path = expand(g:dayone_template_dir_path, ":p")
-    let path = path . "/" . g:dayone_entry_suffix . ".txt"
-    if filereadable(path)
-      let template = readfile(path)
-    endif
-  endif
-  " apply template
-  let old_undolevels = &undolevels
-  set undolevels=-1
-  call append(0, s:apply_template(template, items))
-  let &undolevels = old_undolevels
-  set nomodified
-  " echo writefile(s:apply_template(template, items), s:escarg(g:dayone_path . "/" . file_name))
+  " if g:dayone_template_dir_path != ""
+  "   let path = expand(g:dayone_template_dir_path, ":p")
+  "   let path = path . "/" . g:dayone_entry_suffix . ".txt"
+  "   if filereadable(path)
+  "     let template = readfile(path)
+  "   endif
+  " endif
+  " " apply template
+  " let old_undolevels = &undolevels
+  " set undolevels=-1
+  " call append(0, s:apply_template(template, items))
+  " let &undolevels = old_undolevels
+  " set nomodified
+  call writefile(s:apply_template(template, items), g:dayone_path . "/" . file_name)
+  echo "Made that entry " . (g:dayone_path . "/" . file_name)
 
 endfunction
 
@@ -179,6 +148,38 @@ function! s:create_uuid()
   let uuid = toupper(substitute(matchstr(system("uuidgen"),
         \ "[^\n\r]*"), "-", "", "g"))
   return uuid
+endfunction
+
+function! dayone#list()
+  if get(g:, 'dayone_vimfiler', 0) != 0
+    exe "VimFiler" s:escarg(g:dayone_path)
+  else
+    exe "e" s:escarg(g:dayone_path)
+  endif
+endfunction
+
+function! dayone#grep(word)
+  let word = a:word
+  if word == ''
+    let word = input("EntryGrep word: ")
+  endif
+  if word == ''
+    return
+  endif
+
+  try
+    if get(g:, 'dayone_qfixgrep', 0) != 0
+      exe "Vimgrep -r" s:escarg(word) s:escarg(g:dayone_path . "/*")
+    else
+      exe "vimgrep" s:escarg(word) s:escarg(g:dayone_path . "/*")
+    endif
+  catch
+    redraw | echohl ErrorMsg | echo v:exception | echohl None
+  endtry
+endfunction
+
+function! dayone#_complete_ymdhms(...)
+  return [strftime("%Y%m%d%H%M")]
 endfunction
 
 let &cpo = s:cpo_save

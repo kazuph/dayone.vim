@@ -17,12 +17,12 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 if !exists('g:dayone_path')
-  let g:dayone_path = $HOME . "/Dropbox/アプリ/Day One/Journal.dayone/entries"
+  let g:dayone_path = $HOME . "/Dropbox/アプリ/Day\ One/Journal.dayone/entries"
 endif
 
+command! -nargs=? DayOneNew :call dayone#new(<q-args>)
 command! -nargs=0 DayOneList :call dayone#list()
 command! -nargs=? DayOneGrep :call dayone#grep(<q-args>)
-command! -nargs=? DayOneNew :call dayone#new(<q-args>)
 
 let &cpo = s:cpo_save
 
